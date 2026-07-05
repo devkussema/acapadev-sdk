@@ -13,6 +13,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Acapadev Client Credentials
+    |--------------------------------------------------------------------------
+    |
+    | Estas chaves são usadas para o Socialite (SSO) e chamadas de API nativas.
+    |
+    */
+    'client_id' => env('ACAPADEV_CLIENT_ID'),
+    'client_secret' => env('ACAPADEV_CLIENT_SECRET'),
+    'redirect' => env('ACAPADEV_REDIRECT_URI', '/auth/acapadev/callback'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Webhook Configuration
     |--------------------------------------------------------------------------
     |

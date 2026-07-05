@@ -25,6 +25,30 @@ class AcapadevServiceProvider extends ServiceProvider
                 PublishDocsCommand::class,
             ]);
         }
+
+        $this->bootSocialite();
+    }
+
+    /**
+     * Register the Socialite provider.
+     */
+    protected function bootSocialite(): void
+    {
+        if (class_exists(\Laravel\Socialite\Facades\Socialite::class)) {
+            $socialite = $this->app->make('Laravel\Socialite\Contracts\Factory');
+
+            $socialite->extend('acapadev', function ($app) use ($socialite) {
+                $config = [
+                    'client_id' => config('acapadev.client_id'),
+                    'client_secret' => config('acapadev.client_secret'),
+                    'redirect' => config('acapadev.redirect'),
+                ];
+
+                return $socialite->buildProvider(
+                    \Acapadev\Sdk\Socialite\AcapadevProvider::class, $config
+                );
+            });
+        }
     }
 
     /**
@@ -35,5 +59,9 @@ class AcapadevServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/acapadev.php', 'acapadev'
         );
+
+        $this->app->singleton(\Acapadev\Sdk\Services\AcapadevApiClient::class, function ($app) {
+            return new \Acapadev\Sdk\Services\AcapadevApiClient();
+        });
     }
 }

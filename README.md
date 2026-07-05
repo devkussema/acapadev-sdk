@@ -50,19 +50,7 @@ O Acapadev ID notifica as aplicações satélite sempre que ocorrem ações cruc
 O pacote expõe, por defeito, a rota `POST /acapadev/webhook`.
 Tens de configurar este exato URL (ex: `https://teu-dominio.ao/acapadev/webhook`) no painel do programador do teu Acapadev ID.
 
-### 2. Isenção da Proteção CSRF
-Como os webhooks são pedidos externos (S2S - Server to Server), o Laravel precisa de ignorar a validação CSRF para esta rota.
-Se estiveres a usar o Laravel 11, vai ao ficheiro `bootstrap/app.php` e adiciona a exclusão:
-
-```php
-->withMiddleware(function (Middleware $middleware) {
-    $middleware->validateCsrfTokens(except: [
-        'acapadev/webhook', // Ignorar CSRF para webhooks
-    ]);
-})
-```
-
-### 3. Ouvir os Eventos Nativos
+### 2. Ouvir os Eventos Nativos
 
 Quando um webhook válido e seguro chega, o SDK não toma decisões de negócio cegas. Em vez disso, ele converte o webhook num Evento Nativo do Laravel: `Acapadev\Sdk\Events\WebhookReceived`.
 

@@ -53,7 +53,7 @@ class AcapadevProvider extends AbstractProvider implements ProviderInterface
      * @param  array  $user
      * @return \Laravel\Socialite\Two\User
      */
-    protected function mapUser(array $user)
+    protected function mapUserToObject(array $user)
     {
         return (new User)->setRaw($user)->map([
             'id'       => $user['id'] ?? null,

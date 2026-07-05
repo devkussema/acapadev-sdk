@@ -95,5 +95,4 @@ class InstallCommand extends Command
             $this->info('Variáveis guardadas no ficheiro .env com sucesso!');
         }
     }
-    }
 }

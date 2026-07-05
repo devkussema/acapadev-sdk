@@ -36,13 +36,14 @@ class InstallCommand extends Command
     }
 
     /**
-     * Updates the environment file with Acapadev defaults if they do not exist.
+     * Updates the environment file interactively.
      */
     protected function updateEnvironmentFile(): void
     {
         $envPath = base_path('.env');
 
         if (!file_exists($envPath)) {
+            $this->warn('Ficheiro .env não encontrado. Por favor configure as variáveis manualmente.');
             return;
         }
 
@@ -54,13 +55,44 @@ class InstallCommand extends Command
             $added = true;
         }
 
+        $this->info("\n--- Configuração de Segurança ---");
+        
         if (!str_contains($envContent, 'ACAPADEV_WEBHOOK_SECRET=')) {
-            file_put_contents($envPath, PHP_EOL . 'ACAPADEV_WEBHOOK_SECRET=' . \Illuminate\Support\Str::random(32), FILE_APPEND);
+            $webhookSecret = $this->secret('Qual é o Webhook Secret gerado no Acapadev ID? (Deixe em branco para gerar um aleatório)');
+            
+            if (empty($webhookSecret)) {
+                $webhookSecret = \Illuminate\Support\Str::random(32);
+                $this->line("Gerado um secret aleatório: <comment>{$webhookSecret}</comment>");
+            }
+            
+            file_put_contents($envPath, PHP_EOL . 'ACAPADEV_WEBHOOK_SECRET=' . $webhookSecret, FILE_APPEND);
             $added = true;
+        } else {
+            $this->line('ACAPADEV_WEBHOOK_SECRET já está configurado no .env.');
+        }
+
+        if (!str_contains($envContent, 'ACAPADEV_CLIENT_ID=')) {
+            $clientId = $this->ask('Qual é o Client ID desta aplicação satélite? (Deixe em branco se ainda não tiver)');
+            if (!empty($clientId)) {
+                file_put_contents($envPath, PHP_EOL . 'ACAPADEV_CLIENT_ID=' . $clientId, FILE_APPEND);
+                $added = true;
+            }
+        } else {
+            $this->line('ACAPADEV_CLIENT_ID já está configurado no .env.');
+        }
+
+        if (!str_contains($envContent, 'ACAPADEV_CLIENT_SECRET=')) {
+            $clientSecret = $this->secret('Qual é o Client Secret desta aplicação? (Deixe em branco se ainda não tiver)');
+            if (!empty($clientSecret)) {
+                file_put_contents($envPath, PHP_EOL . 'ACAPADEV_CLIENT_SECRET=' . $clientSecret, FILE_APPEND);
+                $added = true;
+            }
+        } else {
+            $this->line('ACAPADEV_CLIENT_SECRET já está configurado no .env.');
         }
 
         if ($added) {
-            $this->info('As variáveis ACAPADEV_URL e ACAPADEV_WEBHOOK_SECRET foram adicionadas ao teu ficheiro .env automaticamente.');
+            $this->info('Variáveis guardadas no ficheiro .env com sucesso!');
         }
     }
     }

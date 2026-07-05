@@ -4,6 +4,7 @@ namespace Acapadev\Sdk;
 
 use Illuminate\Support\ServiceProvider;
 use Acapadev\Sdk\Console\InstallCommand;
+use Acapadev\Sdk\Console\PublishDocsCommand;
 
 class AcapadevServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class AcapadevServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallCommand::class,
+                PublishDocsCommand::class,
             ]);
         }
     }

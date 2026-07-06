@@ -2,9 +2,9 @@
 
 namespace Acapadev\Sdk\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Acapadev\Sdk\Events\WebhookReceived;
+use Acapadev\Sdk\Http\Requests\AcapadevWebhookRequest;
 use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
@@ -12,17 +12,24 @@ class WebhookController extends Controller
     /**
      * Handle incoming webhooks from Acapadev ID.
      */
-    public function handle(Request $request)
+    public function handle(AcapadevWebhookRequest $request)
     {
-        $payload = $request->all();
+        $payload = $request->validated();
+        $eventName = $payload['event'];
 
-        if (!isset($payload['event'])) {
-            return response()->json(['error' => 'Formato de webhook inválido.'], 400);
+        Log::info("Acapadev SDK: Processando webhook [{$eventName}]", ['user_id' => $payload['user']['id'] ?? null]);
+
+        // Disparar o evento nativo geral (já existente)
+        event(new WebhookReceived($eventName, $payload));
+
+        // Mapeamento dinâmico (Custom Events) - Ponto 10
+        $customEvents = config('acapadev.webhooks.events', []);
+        
+        if (isset($customEvents[$eventName]) && class_exists($customEvents[$eventName])) {
+            $eventClass = $customEvents[$eventName];
+            event(new $eventClass($payload));
         }
 
-        // Emitir o evento nativo do Laravel para que a aplicação satélite possa ouvir
-        event(new WebhookReceived($payload['event'], $payload));
-
-        return response()->json(['status' => 'Webhook recebido com sucesso.']);
+        return response()->json(['status' => 'Webhook processado com sucesso.']);
     }
 }

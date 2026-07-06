@@ -1,4 +1,6 @@
-# Acapadev SDK para Laravel
+# Acapadev SDK
+
+*(🇺🇸 English documentation available in [README_EN.md](README_EN.md))* para Laravel
 
 Bem-vindo ao **Acapadev SDK**, a ferramenta oficial para integrar aplicações satélite (como o *Token.ao*) ao ecossistema central do **Acapadev ID**.
 

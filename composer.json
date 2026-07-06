@@ -37,6 +37,8 @@
     "prefer-stable": true,
     "require-dev": {
         "orchestra/testbench": "^9.17",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^12.5",
+        "pestphp/pest": "*",
+        "pestphp/pest-plugin-laravel": "*"
     }
 }

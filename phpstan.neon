@@ -11,9 +11,6 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static\(\).#'
-        - '#Call to an undefined method Illuminate\\Http\\Client\\Response::json\(\)#'
 
     excludePaths:
         - ./*/*/FileToBeExcluded.php
-
-    checkMissingIterableValueType: false
